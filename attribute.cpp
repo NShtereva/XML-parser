@@ -38,6 +38,16 @@ Attribute& Attribute::operator = (const Attribute& other)
     return *this;
 }
 
+const char* Attribute::getLabel() const
+{
+    return this->label;
+}
+
+const char* Attribute::getValue() const
+{
+    return this->value;
+}
+
 void Attribute::setLabel(const char* label)
 {
     if(!label || strlen(label) > this->MAX_LEN)
@@ -76,16 +86,6 @@ void Attribute::setValue(const char* value)
     strcpy(this->value, value);
 }
 
-const char* Attribute::getLabel() const
-{
-    return this->label;
-}
-
-const char* Attribute::getValue() const
-{
-    return this->value;
-}
-
 std::ostream& operator << (std::ostream& out, const Attribute& attribute)
 {
     out << attribute.label << "=\"" << attribute.value << "\"";
@@ -99,13 +99,10 @@ std::istream& operator >> (std::istream& in, Attribute& attribute)
     in.getline(buffer, attribute.MAX_LEN, '=');
     attribute.setLabel(buffer);
 
-    in.get(); // '='
     in.get(); // '\"'
 
     in.getline(buffer, attribute.MAX_LEN, '\"');
     attribute.setValue(buffer);
-
-    in.get(); // '\"'
 
     return in;
 }

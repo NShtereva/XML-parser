@@ -7,12 +7,8 @@ class Attribute
 {
     private:
         static const size_t MAX_LEN = 255;
-        
         char* label;
         char* value;
-
-        void setLabel(const char* label);
-        void setValue(const char* value);
 
     public:
         Attribute();
@@ -24,6 +20,9 @@ class Attribute
 
         const char* getLabel() const;
         const char* getValue() const;
+
+        void setLabel(const char* label);
+        void setValue(const char* value);
 
         friend std::ostream& operator << (std::ostream& out, const Attribute& attribute);
         friend std::istream& operator >> (std::istream& in, Attribute& attribute);
