@@ -22,6 +22,7 @@ Element::Element(const Element& other)
 Element::~Element()
 {
     this->deallocate();
+    this->counter--;
 }
 
 Element& Element::operator = (const Element& other)
@@ -78,7 +79,7 @@ void Element::setId()
 {
     char* idValue = ElementHelper::toString(this->counter);
 
-    this->id.setLabel("id");
+    this->id.setKey("id");
     this->id.setValue(idValue);
     
     delete[] idValue;
@@ -102,6 +103,148 @@ void Element::setText(const char* text)
     }
 
     strcpy(this->text, text);
+}
+
+int Element::functionHelper(const Element* element, const char* id, const char* key) const
+{
+    int index = -1;
+
+    if(strcmp(element->id.getValue(), id) == 0)
+    {
+        int numberOfAttributes = element->attributes.getSize();
+
+        for(int i = 0; i < numberOfAttributes && index == -1; i++)
+        {
+            if(strcmp(element->attributes[i].getKey(), key) == 0)
+                index = i;
+        }
+    }
+
+    return index;
+}
+
+const char* Element::getAttributeValue(const char* id, const char* key) const
+{
+    int index = this->functionHelper(this, id, key);
+
+    if(index != -1)
+         return this->attributes[index].getValue();       
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].getAttributeValue(id, key))
+            return this->nestedElements[i].getAttributeValue(id, key);
+    }
+
+    return nullptr;
+}
+
+bool Element::setAttributeValue(const char* id, const char* key, const char* value)
+{
+    int index = this->functionHelper(this, id, key);
+
+    if(index != -1)
+    {
+        this->attributes[index].setValue(value);
+        return true;
+    }
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].setAttributeValue(id, key, value))
+            return true;
+    }
+
+    return false;
+}
+
+bool Element::deleteAttribute(const char* id, const char* key)
+{
+    int index = functionHelper(this, id, key);
+
+    if(index != -1)
+    {
+        this->attributes.deleteAt(index);
+        return true;
+    }
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].deleteAttribute(id, key))
+            return true;
+    }
+
+    return false;
+}
+
+bool Element::addNestedElement(const char* id)
+{
+    if(strcmp(this->id.getValue(), id) == 0)
+    {
+        Element e;
+        e.level = this->level + 1;
+        e.setLabel("<unknown>");
+        e.setText("<unknown>");
+
+        this->nestedElements.add(e);
+        return true;
+    }
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].addNestedElement(id))
+            return true;
+    }
+
+    return false;
+}
+
+bool Element::getChildrenAttributesHelper(const Element* element, const char* id, Array<Attribute>& array) const
+{
+    if(strcmp(element->id.getValue(), id) == 0)
+    {
+        int numberOfNestedElements = element->nestedElements.getSize();
+
+        for(int i = 0; i < numberOfNestedElements; i++)
+        {
+            int numberOfAttributes = element->nestedElements[i].attributes.getSize();
+
+            for(int j = 0; j < numberOfAttributes; j++)
+            {
+                array.add(element->nestedElements[i].attributes[j]);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+Array<Attribute> Element::getChildrenAttributes(const char* id) const
+{
+    Array<Attribute> array;
+
+    bool flag = getChildrenAttributesHelper(this, id, array);
+    if(flag) return array;
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        flag = getChildrenAttributesHelper(&this->nestedElements[i], id, array);
+        if(flag) return array;
+    }
+
+    return array;
 }
 
 std::ostream& operator << (std::ostream& out, const Element& element)
@@ -174,7 +317,7 @@ std::istream& operator >> (std::istream& in, Element& element)
             Attribute a;
             in >> a;
 
-            if(strcmp(a.getLabel(), "id") == 0)
+            if(strcmp(a.getKey(), "id") == 0)
                 element.id.setValue(a.getValue());
             else
                 element.attributes.add(a);

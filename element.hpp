@@ -24,13 +24,28 @@ class Element
         void setLabel(const char* label);
         void setId();
         void setText(const char* text);
+
+        int functionHelper(const Element* element, const char* id, const char* key) const;
         
+        bool getChildrenAttributesHelper(const Element* element, const char* id, 
+                                                           Array<Attribute>& array) const;
+
     public:
         Element();
         Element(const Element& other);
         ~Element();
 
         Element& operator = (const Element& other);
+
+        const char* getAttributeValue(const char* id, const char* key) const;
+        
+        bool setAttributeValue(const char* id, const char* key, const char* value);
+
+        bool deleteAttribute(const char* id, const char* key);
+
+        bool addNestedElement(const char* id);
+
+        Array<Attribute> getChildrenAttributes(const char* id) const;
 
         friend std::ostream& operator << (std::ostream& out, const Element& element);
         friend std::istream& operator >> (std::istream& in, Element& element);
