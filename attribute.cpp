@@ -5,24 +5,24 @@
 
 #include "myException.hpp"
 
-Attribute::Attribute() : label(nullptr), value(nullptr)
+Attribute::Attribute() : key(nullptr), value(nullptr)
 { }
 
 Attribute::Attribute(const char* label, const char* value)
-    : label(nullptr), value(nullptr)
+    : key(nullptr), value(nullptr)
 {
-    this->setLabel(label);
+    this->setKey(label);
     this->setValue(value);
 }
 
 Attribute::Attribute(const Attribute& other)
-    : Attribute(other.label, other.value)
+    : Attribute(other.key, other.value)
 { }
 
 Attribute::~Attribute()
 {
-    delete[] this->label;
-    this->label = nullptr;
+    delete[] this->key;
+    this->key = nullptr;
 
     delete[] this->value;
     this->value = nullptr;
@@ -32,15 +32,15 @@ Attribute& Attribute::operator = (const Attribute& other)
 {
     if(this != &other)
     {
-        this->setLabel(other.label);
+        this->setKey(other.key);
         this->setValue(other.value);
     }
     return *this;
 }
 
-const char* Attribute::getLabel() const
+const char* Attribute::getKey() const
 {
-    return this->label;
+    return this->key;
 }
 
 const char* Attribute::getValue() const
@@ -48,23 +48,23 @@ const char* Attribute::getValue() const
     return this->value;
 }
 
-void Attribute::setLabel(const char* label)
+void Attribute::setKey(const char* key)
 {
-    if(!label || strlen(label) > this->MAX_LEN)
+    if(!key || strlen(key) > this->MAX_LEN)
     {
-        throw MyException("Invalid label!");
+        throw MyException("Invalid key!");
     }
 
-    delete[] this->label;
+    delete[] this->key;
 
-    this->label = new(std::nothrow) char[strlen(label) + 1];
-    if(!this->label)
+    this->key = new(std::nothrow) char[strlen(key) + 1];
+    if(!this->key)
     {
         std::cout << "Memory not allocated successfully!" << std::endl;
         return;
     }
 
-    strcpy(this->label, label);
+    strcpy(this->key, key);
 }
 
 void Attribute::setValue(const char* value)
@@ -88,7 +88,7 @@ void Attribute::setValue(const char* value)
 
 std::ostream& operator << (std::ostream& out, const Attribute& attribute)
 {
-    out << attribute.label << "=\"" << attribute.value << "\"";
+    out << attribute.key << "=\"" << attribute.value << "\"";
     return out;
 }
 
@@ -97,7 +97,7 @@ std::istream& operator >> (std::istream& in, Attribute& attribute)
     char buffer[attribute.MAX_LEN];
 
     in.getline(buffer, attribute.MAX_LEN, '=');
-    attribute.setLabel(buffer);
+    attribute.setKey(buffer);
 
     in.get(); // '\"'
 
