@@ -34,6 +34,8 @@ class Array
 
         void add(const T& element);
 
+        void deleteAt(int index);
+
         T& operator [] (int index);
         const T& operator [] (int index) const;
 };
@@ -158,6 +160,30 @@ void Array<T>::add(const T& element)
     }
 
     this->size++;
+}
+
+template <typename T>
+void Array<T>::deleteAt(int index)
+{
+    if(index < 0 && index > this->size - 1)
+        throw MyException("Invalid index!");
+
+    if(index == size - 1)
+    {
+        delete this->elements[size - 1];
+        this->size--;
+        return;
+    }
+    
+    T* save = this->elements[index];
+    
+    for(int i = index; i < this->size - 1; i++)
+    {
+        this->elements[i] = this->elements[i + 1];
+    }
+
+    delete save;
+    this->size--;
 }
 
 template <typename T>
