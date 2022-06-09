@@ -8,10 +8,10 @@
 Attribute::Attribute() : key(nullptr), value(nullptr)
 { }
 
-Attribute::Attribute(const char* label, const char* value)
+Attribute::Attribute(const char* key, const char* value)
     : key(nullptr), value(nullptr)
 {
-    this->setKey(label);
+    this->setKey(key);
     this->setValue(value);
 }
 
