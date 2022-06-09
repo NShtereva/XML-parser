@@ -38,6 +38,9 @@ class Array
 
         T& operator [] (int index);
         const T& operator [] (int index) const;
+
+        template <typename U>
+        friend std::ostream& operator << (std::ostream& out, const Array<U>& array);
 };
 
 template <typename T>
@@ -200,6 +203,17 @@ const T& Array<T>::operator [] (int index) const
     if(index < 0 && index > this->size - 1)
         throw MyException("Invalid index!");
     return *this->elements[index];
+}
+
+template <typename U>
+std::ostream& operator << (std::ostream& out, const Array<U>& array)
+{
+    int size = array.getSize();
+    for(int i = 0; i < size; i++)
+    {
+        out << array[i] << std::endl;
+    }
+    return out;
 }
 
 #endif
