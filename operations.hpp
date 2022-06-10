@@ -15,6 +15,8 @@ class Operations
         void select(const char* id, const char* key) const;
         void set(const char* id, const char* key, const char* value);
         Array<Attribute> children(const char* id) const;
+        void child(const char* id, unsigned int n) const;
+        void text(const char* id) const;
         void deleteAttribute(const char* id, const char* key);
         void newchild(const char* id);
 };
