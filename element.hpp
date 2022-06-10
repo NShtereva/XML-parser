@@ -30,6 +30,8 @@ class Element
         bool getChildrenAttributesHelper(const Element* element, const char* id, 
                                                            Array<Attribute>& array) const;
 
+        bool getChildHelper(unsigned int n, Element& child) const;
+
     public:
         Element();
         Element(const Element& other);
@@ -46,6 +48,11 @@ class Element
         bool addNestedElement(const char* id);
 
         Array<Attribute> getChildrenAttributes(const char* id) const;
+
+        // n > 0
+        const Element getChild(const char* id, unsigned int n, bool& isFound) const;
+
+        const char* getText(const char* id) const;
 
         friend std::ostream& operator << (std::ostream& out, const Element& element);
         friend std::istream& operator >> (std::istream& in, Element& element);

@@ -164,7 +164,7 @@ bool Element::setAttributeValue(const char* id, const char* key, const char* val
 
 bool Element::deleteAttribute(const char* id, const char* key)
 {
-    int index = functionHelper(this, id, key);
+    int index = this->functionHelper(this, id, key);
 
     if(index != -1)
     {
@@ -233,18 +233,89 @@ Array<Attribute> Element::getChildrenAttributes(const char* id) const
 {
     Array<Attribute> array;
 
-    bool flag = getChildrenAttributesHelper(this, id, array);
+    bool flag = this->getChildrenAttributesHelper(this, id, array);
     if(flag) return array;
 
     int numberOfNestedElements = this->nestedElements.getSize();
 
     for(int i = 0; i < numberOfNestedElements; i++)
     {
-        flag = getChildrenAttributesHelper(&this->nestedElements[i], id, array);
+        flag = this->getChildrenAttributesHelper(&this->nestedElements[i], id, array);
         if(flag) return array;
     }
 
     return array;
+}
+
+bool Element::getChildHelper(unsigned int n, Element& child) const
+{
+    if(this->level == n)
+    {
+        child = *this;
+        return true;
+    }
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].getChildHelper(n, child))
+            return true;
+    }
+
+    return false;
+}
+
+const Element Element::getChild(const char* id, unsigned int n, bool& isFound) const
+{
+    if(strcmp(this->id.getValue(), id) == 0)
+    {
+        int numberOfNestedElements = this->nestedElements.getSize();
+
+        Element child;
+        child.setLabel("<unknown>");
+        child.setText("<unknown>");
+
+        int N = n + this->level;
+
+        for(int i = 0; i < numberOfNestedElements && !isFound; i++)
+        {
+            isFound = this->nestedElements[i].getChildHelper(N, child);
+        }
+
+        child.level = 0;
+        return child;
+    }
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        Element child = this->nestedElements[i].getChild(id, n, isFound);
+        if(isFound) return child;
+    }
+
+    Element child;
+    child.setLabel("<unknown>");
+    child.setText("<unknown>");
+
+    return child;
+}
+
+const char* Element::getText(const char* id) const
+{
+    if(strcmp(this->id.getValue(), id) == 0)
+        return this->text;
+
+    int numberOfNestedElements = this->nestedElements.getSize();
+
+    for(int i = 0; i < numberOfNestedElements; i++)
+    {
+        if(this->nestedElements[i].getText(id))
+            return this->nestedElements[i].getText(id);
+    }
+
+    return nullptr;
 }
 
 std::ostream& operator << (std::ostream& out, const Element& element)
