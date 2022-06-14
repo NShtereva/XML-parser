@@ -9,7 +9,8 @@ class Element
     private:
         static const size_t MAX_LEN = 255;
         static const size_t MAX_TEXT_LEN = 1000;
-        static unsigned int counter;
+
+        static unsigned int nextId;
 
         char* label;
         Attribute id;

@@ -1,10 +1,12 @@
 #include "element.hpp"
 
 #include <cstring>
+#include <exception>
 
-#include "elementHelper.hpp"
+#include "helper.hpp"
+#include "myException.hpp"
 
-unsigned int Element::counter = 1;
+unsigned int Element::nextId = 1;
 
 Element::Element() 
     : label(nullptr), level(0), text(nullptr)
@@ -15,14 +17,12 @@ Element::Element()
 Element::Element(const Element& other) 
     : label(nullptr), level(0), text(nullptr)
 {
-    this->setId();
     this->copy(other);
 }
 
 Element::~Element()
 {
     this->deallocate();
-    this->counter--;
 }
 
 Element& Element::operator = (const Element& other)
@@ -37,6 +37,8 @@ Element& Element::operator = (const Element& other)
 
 void Element::copy(const Element& other)
 {
+    this->id = other.id;
+
     if(other.label) 
         this->setLabel(other.label);
 
@@ -61,7 +63,7 @@ void Element::deallocate()
 void Element::setLabel(const char* label)
 {
     if(!label || strlen(label) >= MAX_LEN) 
-        throw MyException("Invalid label!");
+        throw std::invalid_argument("Invalid label!");
 
     delete[] this->label;
 
@@ -77,7 +79,7 @@ void Element::setLabel(const char* label)
 
 void Element::setId()
 {
-    char* idValue = ElementHelper::toString(this->counter);
+    char* idValue = Helper::toString(nextId);
 
     this->id.setKey("id");
     this->id.setValue(idValue);
@@ -85,13 +87,13 @@ void Element::setId()
     delete[] idValue;
     idValue = nullptr;
 
-    this->counter++;
+    nextId++;
 }
 
 void Element::setText(const char* text)
 {
     if(!text || strlen(text) >= MAX_LEN) 
-        throw MyException("Invalid text!");
+        throw std::invalid_argument("Invalid text!");
 
     delete[] this->text;
 
@@ -320,7 +322,7 @@ const char* Element::getText(const char* id) const
 
 std::ostream& operator << (std::ostream& out, const Element& element)
 {
-    ElementHelper::getInstance().processTheIndentation(out, element.level);
+    Helper::processTheIndentation(out, element.level);
     out << "<" << element.label << " " << element.id;
 
     int attribSize = element.attributes.getSize();
@@ -347,7 +349,7 @@ std::ostream& operator << (std::ostream& out, const Element& element)
             out << element.nestedElements[i];
         }
 
-        ElementHelper::getInstance().processTheIndentation(out, element.level);
+        Helper::processTheIndentation(out, element.level);
     }
     else
     {
@@ -381,6 +383,9 @@ std::istream& operator >> (std::istream& in, Element& element)
 
     element.setLabel(buffer);
 
+    char saveId[element.MAX_LEN];
+    saveId[0] = '\0';
+
     if(c == ' ')
     {
         while(c != '>')
@@ -389,13 +394,16 @@ std::istream& operator >> (std::istream& in, Element& element)
             in >> a;
 
             if(strcmp(a.getKey(), "id") == 0)
-                element.id.setValue(a.getValue());
+                strcpy(saveId, a.getValue());
             else
                 element.attributes.add(a);
 
             in.get(c);
         }
     }
+
+    if(strlen(saveId) > 0) 
+        element.id.setValue(saveId);
 
     in.get(c);
 
