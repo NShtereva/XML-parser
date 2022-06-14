@@ -23,7 +23,11 @@ class Element
         void deallocate();
 
         void setLabel(const char* label);
+
         void setId();
+        void addSuffix(const char* suffix);
+        void processDuplicateIds();
+
         void setText(const char* text);
 
         int functionHelper(const Element* element, const char* id, const char* key) const;

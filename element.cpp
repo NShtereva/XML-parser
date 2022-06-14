@@ -90,6 +90,35 @@ void Element::setId()
     nextId++;
 }
 
+void Element::addSuffix(const char* suffix)
+{
+    char* currStr = new(std::nothrow) char[strlen(this->id.getValue()) + strlen(suffix) + 1];
+    if(!currStr)
+    {
+        std::cout << "Memory not allocated successfully!" << std::endl;
+        return;
+    }
+
+    strcpy(currStr, this->id.getValue());
+    this->id.setValue(strcat(currStr, suffix));
+    
+    delete[] currStr;
+    currStr = nullptr;
+}
+
+void Element::processDuplicateIds()
+{
+    int size = this->nestedElements.getSize();
+    for(int i = 0; i < size; i++)
+    {
+        if(strcmp(this->id.getValue(), this->nestedElements[i].id.getValue()) == 0)
+        {
+            this->addSuffix("_1");
+            this->nestedElements[i].addSuffix("_2");
+        } 
+    }
+}
+
 void Element::setText(const char* text)
 {
     if(!text || strlen(text) >= MAX_LEN) 
@@ -440,6 +469,8 @@ std::istream& operator >> (std::istream& in, Element& element)
     in.getline(buffer, element.MAX_LEN, '>');
     if(strcmp(element.label, buffer) != 0)
         throw MyException("Invalid element!");
+
+    element.processDuplicateIds();
 
     in.get(); // '\n'
 
