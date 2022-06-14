@@ -2,8 +2,7 @@
 
 #include <cstring>
 #include <cassert>
-
-#include "myException.hpp"
+#include <exception>
 
 Attribute::Attribute() : key(nullptr), value(nullptr)
 { }
@@ -11,8 +10,15 @@ Attribute::Attribute() : key(nullptr), value(nullptr)
 Attribute::Attribute(const char* key, const char* value)
     : key(nullptr), value(nullptr)
 {
-    this->setKey(key);
-    this->setValue(value);
+    try
+    {
+        this->setKey(key);
+        this->setValue(value);
+    }
+    catch(const std::invalid_argument& e)
+    {
+        std::cerr << e.what() << '\n';
+    }    
 }
 
 Attribute::Attribute(const Attribute& other)
@@ -32,8 +38,15 @@ Attribute& Attribute::operator = (const Attribute& other)
 {
     if(this != &other)
     {
-        this->setKey(other.key);
-        this->setValue(other.value);
+        try
+        {
+            this->setKey(other.key);
+            this->setValue(other.value);
+        }
+        catch(const std::invalid_argument& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
     }
     return *this;
 }
@@ -52,7 +65,7 @@ void Attribute::setKey(const char* key)
 {
     if(!key || strlen(key) > this->MAX_LEN)
     {
-        throw MyException("Invalid key!");
+        throw std::invalid_argument("Invalid key!");
     }
 
     delete[] this->key;
@@ -71,7 +84,7 @@ void Attribute::setValue(const char* value)
 {
     if(!value || strlen(value) > this->MAX_LEN)
     {
-        throw MyException("Invalid value!");
+        throw std::invalid_argument("Invalid value!");
     }
 
     delete[] this->value;
@@ -96,13 +109,27 @@ std::istream& operator >> (std::istream& in, Attribute& attribute)
 {
     char buffer[attribute.MAX_LEN];
 
-    in.getline(buffer, attribute.MAX_LEN, '=');
-    attribute.setKey(buffer);
+    try
+    {
+        in.getline(buffer, attribute.MAX_LEN, '=');
+        attribute.setKey(buffer);
+    }
+    catch(const std::invalid_argument& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 
     in.get(); // '\"'
 
-    in.getline(buffer, attribute.MAX_LEN, '\"');
-    attribute.setValue(buffer);
+    try
+    {
+        in.getline(buffer, attribute.MAX_LEN, '\"');
+        attribute.setValue(buffer);
+    }
+    catch(const std::invalid_argument& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 
     return in;
 }
