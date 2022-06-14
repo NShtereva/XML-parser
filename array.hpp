@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <cassert>
-
-#include "myException.hpp"
+#include <exception>
 
 template <typename T>
 class Array
@@ -79,7 +78,7 @@ template <typename T>
 void Array<T>::allocate(const size_t size)
 {
     if(size < INITIAL_CAPACITY)
-        throw MyException("Invalid size!");
+        throw std::invalid_argument("Invalid size!");
 
     this->elements = new(std::nothrow) T*[size];
     if(!this->elements)
@@ -168,8 +167,8 @@ void Array<T>::add(const T& element)
 template <typename T>
 void Array<T>::deleteAt(int index)
 {
-    if(index < 0 && index > this->size - 1)
-        throw MyException("Invalid index!");
+    if(index < 0 || index > this->size - 1)
+        throw std::out_of_range("Invalid index!");
 
     if(index == size - 1)
     {
@@ -192,16 +191,16 @@ void Array<T>::deleteAt(int index)
 template <typename T>
 T& Array<T>::operator [] (int index)
 {
-    if(index < 0 && index > this->size - 1)
-        throw MyException("Invalid index!");
+    if(index < 0 || index > this->size - 1)
+        throw std::out_of_range("Invalid index!");
     return *this->elements[index];
 }
 
 template <typename T>
 const T& Array<T>::operator [] (int index) const
 {
-    if(index < 0 && index > this->size - 1)
-        throw MyException("Invalid index!");
+    if(index < 0 || index > this->size - 1)
+        throw std::out_of_range("Invalid index!");
     return *this->elements[index];
 }
 
