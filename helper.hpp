@@ -18,7 +18,7 @@ class Helper
 
         static void inLowerCase(char*& str);
 
-	    static bool isValidFileName(const char* fileName, const size_t MAX_LEN);
+	static bool isValidFileName(const char* fileName, const size_t MAX_LEN);
 };
 
 #endif
