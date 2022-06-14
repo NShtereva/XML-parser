@@ -20,10 +20,10 @@ class CommandParser
 
 	public:
 		CommandParser(const char* line);
-        	CommandParser(const CommandParser& other);
-        	~CommandParser();
+        CommandParser(const CommandParser& other);
+        ~CommandParser();
 
-        	CommandParser& operator = (const CommandParser& other);
+        CommandParser& operator = (const CommandParser& other);
 
 		size_t getNumberOfArguments() const;
 
