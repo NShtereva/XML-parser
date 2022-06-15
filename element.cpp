@@ -220,8 +220,8 @@ bool Element::addNestedElement(const char* id)
     {
         Element e;
         e.level = this->level + 1;
-        e.setLabel("<unknown>");
-        e.setText("<unknown>");
+        e.setLabel("unknown");
+        e.setText("unknown");
 
         this->nestedElements.add(e);
         return true;
@@ -304,8 +304,8 @@ const Element Element::getChild(const char* id, unsigned int n, bool& isFound) c
         int numberOfNestedElements = this->nestedElements.getSize();
 
         Element child;
-        child.setLabel("<unknown>");
-        child.setText("<unknown>");
+        child.setLabel("unknown");
+        child.setText("unknown");
 
         int N = n + this->level;
 
@@ -327,8 +327,8 @@ const Element Element::getChild(const char* id, unsigned int n, bool& isFound) c
     }
 
     Element child;
-    child.setLabel("<unknown>");
-    child.setText("<unknown>");
+    child.setLabel("unknown");
+    child.setText("unknown");
 
     return child;
 }
@@ -400,6 +400,9 @@ std::istream& operator >> (std::istream& in, Element& element)
         in.getline(buffer, element.MAX_TEXT_LEN, '<'); // '\t'
 
     char c; in.get(c);
+    if(c == '\0')
+        throw MyException("Empty file!");
+
     int i = 0;
 
     while(c != ' ' && c != '>')
@@ -449,18 +452,18 @@ std::istream& operator >> (std::istream& in, Element& element)
         // nested elements
         in.getline(buffer, element.MAX_LEN, '<');
 
-        int currOffset = element.level * 4 + 4;
+        int currOffset = element.level + 1;
         while(strlen(buffer) == currOffset)
         {
             Element el;
-            el.level = (currOffset - 4) / 4 + 1;
+            el.level = currOffset;
             in >> el;
 
             element.nestedElements.add(el);
             in.getline(buffer, element.MAX_LEN, '<');
         }
 
-        if(strlen(buffer) != currOffset - 4)
+        if(strlen(buffer) != currOffset - 1)
             throw MyException("Invalid indentation!");
     }
 

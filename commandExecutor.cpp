@@ -27,11 +27,22 @@ void CommandExecutor::open(const char* fileName)
     std::ifstream iFile(fileName);
     if(iFile.is_open())
     {
+        try
+        {
+            iFile >> this->element;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() 
+                      << "\nTry opening another file!"
+                      << std::endl;
+            return;
+        }
+
         std::cout << "Successfully opened " << fileName << std::endl;
         strcpy(this->fileName, fileName);
-        this->isFirstCommand = false;
 
-        iFile >> this->element;
+        this->isFirstCommand = false;
 
         iFile.close();
     }
@@ -46,6 +57,9 @@ void CommandExecutor::open(const char* fileName)
         
         std::cout << "Successfully opened " << fileName << std::endl;
         strcpy(this->fileName, fileName);
+
+        this->isFirstCommand = false;
+
         oFile.close();
     }
 }
@@ -153,9 +167,9 @@ void CommandExecutor::set(const char* id, const char* key, const char* value)
     this->isSaved = false;
 }
 
-Array<Attribute> CommandExecutor::children(const char* id) const
+void CommandExecutor::children(const char* id) const
 {
-    return this->element.getChildrenAttributes(id);
+    std::cout << this->element.getChildrenAttributes(id);
 }
 
 // n > 0
@@ -208,7 +222,7 @@ void CommandExecutor::newchild(const char* id)
 
 bool CommandExecutor::isValidCommand(const CommandParser& parser) const
 {
-    char* command = new(std::nothrow) char[this->MAX_LEN];
+    char* command = new(std::nothrow) char[strlen(parser[0]) + 1];
     if(!command)
     {
         std::cout << "Memory not allocated successfully!" << std::endl;
@@ -243,7 +257,7 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
             (strcmp(command, "child") == 0 && numberOfArgs == 3) ||
             (strcmp(command, "text") == 0 && numberOfArgs == 2) ||
             (strcmp(command, "delete") == 0 && numberOfArgs == 3) ||
-            (strcmp(command, "newchild ") == 0 && numberOfArgs == 2))
+            (strcmp(command, "newchild") == 0 && numberOfArgs == 2))
     {
         delete[] command;
         command = nullptr;
@@ -263,7 +277,7 @@ void CommandExecutor::execute(const CommandParser& parser)
         return;
     }
 
-    char* command = new(std::nothrow) char[this->MAX_LEN];
+    char* command = new(std::nothrow) char[strlen(parser[0]) + 1];
     if(!command)
     {
         std::cout << "Memory not allocated successfully!" << std::endl;

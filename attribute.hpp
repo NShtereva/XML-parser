@@ -7,6 +7,7 @@ class Attribute
 {
     private:
         static const size_t MAX_LEN = 255;
+        
         char* key;
         char* value;
 

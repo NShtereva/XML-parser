@@ -129,9 +129,12 @@ void CommandParser::processTheLine(const char* line)
             this->arguments[index][j] = line[i];
             i++; j++;
         }
-        this->arguments[index][j] = '\0';
-
-        index++;
+        
+        if(j > 0)
+        {
+            this->arguments[index][j] = '\0';
+            index++;
+        }
     }
 
     if(index > this->MAX_NUMBER_OF_ARGS)

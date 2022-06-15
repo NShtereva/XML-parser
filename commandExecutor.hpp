@@ -19,28 +19,28 @@ class CommandExecutor
 		CommandExecutor();
 
 		void open(const char* fileName);
-	    	void close();
-	    	void save();
-	    	void saveAs(const char* fileName);
-	    	static void help();
-	    	void exit(const CommandParser& parser);
+	    void close();
+	    void save();
+	    void saveAs(const char* fileName);
+	    static void help();
+	    void exit(const CommandParser& parser);
 
 		void print() const;
-        	void select(const char* id, const char* key) const;
-        	void set(const char* id, const char* key, const char* value);
-        	Array<Attribute> children(const char* id) const;
-        	void child(const char* id, unsigned int n) const;
-        	void text(const char* id) const;
-        	void deleteAttribute(const char* id, const char* key);
-        	void newchild(const char* id);
+        void select(const char* id, const char* key) const;
+        void set(const char* id, const char* key, const char* value);
+        void children(const char* id) const;
+        void child(const char* id, unsigned int n) const;
+        void text(const char* id) const;
+        void deleteAttribute(const char* id, const char* key);
+        void newchild(const char* id);
 		
 		bool isValidCommand(const CommandParser& parser) const;
 
 	public:
 		CommandExecutor(const CommandExecutor& other) = delete;
-        	CommandExecutor& operator = (const CommandExecutor& other) = delete;
+        CommandExecutor& operator = (const CommandExecutor& other) = delete;
 
-        	static CommandExecutor& getInstance();
+        static CommandExecutor& getInstance();
 
 		void execute(const CommandParser& parser);
 };
