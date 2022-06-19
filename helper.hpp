@@ -18,7 +18,7 @@ class Helper
 
         static void inLowerCase(char*& str);
 
-	    static bool isValidFileName(const char* fileName);
+	static bool isValidFileName(const char* fileName);
 
         static bool isWhiteSpace(char a);
 };
