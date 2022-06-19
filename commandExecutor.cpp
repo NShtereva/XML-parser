@@ -18,7 +18,7 @@ CommandExecutor& CommandExecutor::getInstance()
 
 void CommandExecutor::open(const char* fileName)
 {
-    if(strlen(fileName) >= this->MAX_LEN)
+    if(strlen(fileName) >= this->MAX_LEN || !Helper::isValidFileName(fileName))
     {
         std::cout << "Invalid file name!" << std::endl;
         return;
@@ -239,7 +239,7 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
     {   
         delete[] command;
         command = nullptr;
-        return Helper::isValidFileName(parser[1], this->MAX_LEN);
+        return Helper::isValidFileName(parser[1]);
     }
     else if((strcmp(command, "close") == 0 && numberOfArgs == 1) ||
             (strcmp(command, "save") == 0 && numberOfArgs == 1) ||

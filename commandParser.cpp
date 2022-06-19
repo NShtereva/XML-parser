@@ -4,6 +4,8 @@
 #include <cstring>
 #include <exception>
 
+#include "helper.hpp"
+
 CommandParser::CommandParser(const char* line)
     : numberOfArgs(0)
 {
@@ -84,11 +86,6 @@ void CommandParser::deallocate()
     this->arguments = nullptr;
 }
 
-bool CommandParser::isWhiteSpace(char a)
-{
-    return a == ' ' || a == '\t' || a == '\n';
-}
-
 void CommandParser::processTheLine(const char* line)
 {
     int lineSize = strlen(line);
@@ -98,7 +95,7 @@ void CommandParser::processTheLine(const char* line)
     {
         this->arguments[index][0] = '\0';
 
-        while(isWhiteSpace(line[i]) && i < lineSize)
+        while(Helper::isWhiteSpace(line[i]) && i < lineSize)
         {
             i++;
         }
@@ -124,7 +121,7 @@ void CommandParser::processTheLine(const char* line)
         }
 
         int j = 0;
-        while(!isWhiteSpace(line[i]) && i < lineSize)
+        while(!Helper::isWhiteSpace(line[i]) && i < lineSize)
         {
             this->arguments[index][j] = line[i];
             i++; j++;

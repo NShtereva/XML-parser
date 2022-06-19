@@ -67,10 +67,29 @@ void Helper::inLowerCase(char*& str)
     }
 }
 
-bool Helper::isValidFileName(const char* fileName, const size_t MAX_LEN)
+bool Helper::isValidFileName(const char* fileName)
 {
     int len = strlen(fileName);
+    char* name = new(std::nothrow) char[len + 1];
+    if(!name)
+    {
+        std::cout << "Memory not allocated successfully!" << std::endl;
+        return false;
+    }
 
-    return fileName[len - 4] == '.' && fileName[len - 3] == 'x' &&
-           fileName[len - 2] == 'm' && fileName[len - 1] == 'l';
+    strcpy(name, fileName);
+    inLowerCase(name);
+
+    bool isValid = name[len - 4] == '.' && name[len - 3] == 'x' &&
+                            name[len - 2] == 'm' && name[len - 1] == 'l';
+    
+    delete[] name;
+    name = nullptr;
+
+    return isValid;
+}
+
+bool Helper::isWhiteSpace(char a)
+{
+    return a == ' ' || a == '\t' || a == '\n';
 }
