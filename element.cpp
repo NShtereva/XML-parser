@@ -121,7 +121,7 @@ void Element::processDuplicateIds()
 
 void Element::setText(const char* text)
 {
-    if(!text || strlen(text) >= MAX_LEN) 
+    if(!text || strlen(text) >= MAX_TEXT_LEN) 
         throw std::invalid_argument("Invalid text!");
 
     delete[] this->text;
