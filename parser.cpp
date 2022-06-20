@@ -6,13 +6,14 @@
 void Parser::useParser()
 {
     char line[MAX_LEN];
+    bool calledExit = false;
 
-    while(true)
+    while(!calledExit)
     {
         std::cout << "> ";
         std::cin.getline(line, MAX_LEN);
 
         CommandParser parser(line);
-        CommandExecutor::getInstance().execute(parser);
+        calledExit = CommandExecutor::getInstance().execute(parser);
     }
 }
