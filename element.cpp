@@ -278,47 +278,25 @@ Array<Attribute> Element::getChildrenAttributes(const char* id) const
     return array;
 }
 
-bool Element::getChildHelper(unsigned int n, Element& child) const
-{
-    if(this->level == n)
-    {
-        child = *this;
-        return true;
-    }
-
-    int numberOfNestedElements = this->nestedElements.getSize();
-
-    for(int i = 0; i < numberOfNestedElements; i++)
-    {
-        if(this->nestedElements[i].getChildHelper(n, child))
-            return true;
-    }
-
-    return false;
-}
-
 const Element Element::getChild(const char* id, unsigned int n, bool& isFound) const
 {
+    int numberOfNestedElements = this->nestedElements.getSize();
+
     if(strcmp(this->id.getValue(), id) == 0)
     {
-        int numberOfNestedElements = this->nestedElements.getSize();
-
         Element child;
         child.setLabel("unknown");
         child.setText("unknown");
 
-        int N = n + this->level;
-
-        for(int i = 0; i < numberOfNestedElements && !isFound; i++)
+        if(numberOfNestedElements >= n)
         {
-            isFound = this->nestedElements[i].getChildHelper(N, child);
+            isFound = true;
+            child = this->nestedElements[n - 1];
         }
 
         child.level = 0;
         return child;
     }
-
-    int numberOfNestedElements = this->nestedElements.getSize();
 
     for(int i = 0; i < numberOfNestedElements; i++)
     {

@@ -35,8 +35,6 @@ class Element
         bool getChildrenAttributesHelper(const Element* element, const char* id, 
                                                            Array<Attribute>& array) const;
 
-        bool getChildHelper(unsigned int n, Element& child) const;
-
     public:
         Element();
         Element(const Element& other);
