@@ -42,7 +42,7 @@ class CommandExecutor
 
             static CommandExecutor& getInstance();
 
-	    void execute(const CommandParser& parser);
+	    bool execute(const CommandParser& parser);
 };
 
 #endif

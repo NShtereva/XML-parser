@@ -106,11 +106,11 @@ void CommandExecutor::saveAs(const char* fileName)
 
 void CommandExecutor::help()
 {
-    std::cout << "The following commands are supported:\n"
+    std::cout << "\nThe following commands are supported:\n"
               << "open <file>\t\topens <file>\n"
               << "close\t\t\tcloses currently opened file\n"
               << "save\t\t\tsaves the currently open file\n"
-              << "save as <file>\t\tsaves the currently open file in <file>\n"
+              << "saveas <file>\t\tsaves the currently open file in <file>\n"
               << "help\t\t\tprints this information \n"
               << "exit\t\t\texists the program\n"
               << "print\t\t\tdisplays the information read from an XML file\n"
@@ -120,8 +120,7 @@ void CommandExecutor::help()
               << "child <id> <n>\t\taccess to the nth successor of an element\n"
               << "text <id>\t\taccess to element text\n"
               << "delete <id> <key>\tdelete an element attribute\n"
-              << "newchild <id>\t\tadds a new successor to an element\n\n"
-              << "If you select the command save as, it must be enclosed in double quotes -> \"save as\"\n"
+              << "newchild <id>\t\tadds a new successor to an element\n"
               << std::endl;
 }
 
@@ -235,7 +234,7 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
     int numberOfArgs = parser.getNumberOfArguments();
 
     if((strcmp(command, "open") == 0 && numberOfArgs == 2) || 
-        (strcmp(command, "save as") == 0 && numberOfArgs == 2))
+        (strcmp(command, "saveas") == 0 && numberOfArgs == 2))
     {   
         delete[] command;
         command = nullptr;
@@ -269,19 +268,19 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
     return false;
 }
 
-void CommandExecutor::execute(const CommandParser& parser)
+bool CommandExecutor::execute(const CommandParser& parser)
 {
     if(!this->isValidCommand(parser))
     {
         std::cout << "Invalid command!" << std::endl;
-        return;
+        return false;
     }
 
     char* command = new(std::nothrow) char[strlen(parser[0]) + 1];
     if(!command)
     {
         std::cout << "Memory not allocated successfully!" << std::endl;
-        return;
+        return false;
     }
 
     strcpy(command, parser[0]);
@@ -295,7 +294,7 @@ void CommandExecutor::execute(const CommandParser& parser)
         delete[] command;
         command = nullptr;
         
-        return;
+        return false;
     }
 
     if(strcmp(command, "open") == 0)
@@ -310,7 +309,7 @@ void CommandExecutor::execute(const CommandParser& parser)
     {
         this->save();
     }
-    else if(strcmp(command, "save as") == 0)
+    else if(strcmp(command, "saveas") == 0)
     {
         this->saveAs(parser[1]);
     }
@@ -337,7 +336,7 @@ void CommandExecutor::execute(const CommandParser& parser)
                 command = nullptr;
 
                 std::cout << "Exiting program..." << std::endl;
-                std::exit(0);
+                return true;
             }
 
             this->exit(p);
@@ -348,7 +347,7 @@ void CommandExecutor::execute(const CommandParser& parser)
         delete[] command;
         command = nullptr;
         
-        std::exit(0);
+        return true;
     }
     else if(strcmp(command, "print") == 0)
     {
@@ -368,8 +367,21 @@ void CommandExecutor::execute(const CommandParser& parser)
     }
     else if(strcmp(command, "child") == 0)
     {
-        unsigned int n = Helper::toNumber(parser[2]);
-        this->child(parser[1], n);
+        int size = strlen(parser[2]);
+        bool isValidNumber = true;
+
+        for(int i = 0; i < size && isValidNumber; i++)
+        {
+            if(!(parser[2][i] >= '0' && parser[2][i] <= '9'))
+                isValidNumber = false;
+        }
+
+        if(isValidNumber)
+        {
+            unsigned int n = Helper::toNumber(parser[2]);
+            this->child(parser[1], n);
+        }
+        else std::cout << "Invalid n!" << std::endl;        
     }
     else if(strcmp(command, "text") == 0)
     {
@@ -386,4 +398,5 @@ void CommandExecutor::execute(const CommandParser& parser)
 
     delete[] command;
     command = nullptr;
+    return false;
 }
