@@ -3,24 +3,17 @@
 
 #include <iostream>
 
-class Helper
-{
-    private:
-        Helper() = default;
+unsigned int numberOfDigits(unsigned int num);
 
-    public:
-        static unsigned int numberOfDigits(unsigned int num);
+char* toString(unsigned int num);
+unsigned int toNumber(const char* str);
 
-        static char* toString(unsigned int num);
-        static unsigned int toNumber(const char* str);
+void processTheIndentation(std::ostream& out, unsigned int level);
 
-        static void processTheIndentation(std::ostream& out, unsigned int level);
+void inLowerCase(char*& str);
 
-        static void inLowerCase(char*& str);
+bool isValidFileName(const char* fileName);
 
-	static bool isValidFileName(const char* fileName);
-
-        static bool isWhiteSpace(char a);
-};
+bool isWhiteSpace(char a);
 
 #endif

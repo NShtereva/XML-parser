@@ -79,7 +79,7 @@ void Element::setLabel(const char* label)
 
 void Element::setId()
 {
-    char* idValue = Helper::toString(nextId);
+    char* idValue = toString(nextId);
 
     this->id.setKey("id");
     this->id.setValue(idValue);
@@ -329,7 +329,7 @@ const char* Element::getText(const char* id) const
 
 std::ostream& operator << (std::ostream& out, const Element& element)
 {
-    Helper::processTheIndentation(out, element.level);
+    processTheIndentation(out, element.level);
     out << "<" << element.label << " " << element.id;
 
     int attribSize = element.attributes.getSize();
@@ -356,7 +356,7 @@ std::ostream& operator << (std::ostream& out, const Element& element)
             out << element.nestedElements[i];
         }
 
-        Helper::processTheIndentation(out, element.level);
+        processTheIndentation(out, element.level);
     }
     else
     {

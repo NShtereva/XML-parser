@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-unsigned int Helper::numberOfDigits(unsigned int num)
+unsigned int numberOfDigits(unsigned int num)
 {
     unsigned int counter = 0;
     while(num != 0)
@@ -13,7 +13,7 @@ unsigned int Helper::numberOfDigits(unsigned int num)
     return counter;
 }
 
-char* Helper::toString(unsigned int num)
+char* toString(unsigned int num)
 {
     unsigned int size = numberOfDigits(num);
 
@@ -34,7 +34,7 @@ char* Helper::toString(unsigned int num)
     return result;
 }
 
-unsigned int Helper::toNumber(const char* str)
+unsigned int toNumber(const char* str)
 {
     unsigned int result = 0;
 
@@ -47,7 +47,7 @@ unsigned int Helper::toNumber(const char* str)
     return result;
 }
 
-void Helper::processTheIndentation(std::ostream& out, unsigned int level)
+void processTheIndentation(std::ostream& out, unsigned int level)
 {
     while(level > 0)
     {
@@ -56,7 +56,7 @@ void Helper::processTheIndentation(std::ostream& out, unsigned int level)
     }
 }
 
-void Helper::inLowerCase(char*& str)
+void inLowerCase(char*& str)
 {
     int len = strlen(str);
 
@@ -67,7 +67,7 @@ void Helper::inLowerCase(char*& str)
     }
 }
 
-bool Helper::isValidFileName(const char* fileName)
+bool isValidFileName(const char* fileName)
 {
     int len = strlen(fileName);
     char* name = new(std::nothrow) char[len + 1];
@@ -89,7 +89,7 @@ bool Helper::isValidFileName(const char* fileName)
     return isValid;
 }
 
-bool Helper::isWhiteSpace(char a)
+bool isWhiteSpace(char a)
 {
     return a == ' ' || a == '\t' || a == '\n';
 }

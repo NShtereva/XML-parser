@@ -95,7 +95,7 @@ void CommandParser::processTheLine(const char* line)
     {
         this->arguments[index][0] = '\0';
 
-        while(Helper::isWhiteSpace(line[i]) && i < lineSize)
+        while(isWhiteSpace(line[i]) && i < lineSize)
         {
             i++;
         }
@@ -121,7 +121,7 @@ void CommandParser::processTheLine(const char* line)
         }
 
         int j = 0;
-        while(!Helper::isWhiteSpace(line[i]) && i < lineSize)
+        while(!isWhiteSpace(line[i]) && i < lineSize)
         {
             this->arguments[index][j] = line[i];
             i++; j++;

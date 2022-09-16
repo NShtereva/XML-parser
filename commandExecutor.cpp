@@ -18,7 +18,7 @@ CommandExecutor& CommandExecutor::getInstance()
 
 void CommandExecutor::open(const char* fileName)
 {
-    if(strlen(fileName) >= this->MAX_LEN || !Helper::isValidFileName(fileName))
+    if(strlen(fileName) >= this->MAX_LEN || !isValidFileName(fileName))
     {
         std::cout << "Invalid file name!" << std::endl;
         return;
@@ -229,7 +229,7 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
     }
 
     strcpy(command, parser[0]);
-    Helper::inLowerCase(command);
+    inLowerCase(command);
 
     int numberOfArgs = parser.getNumberOfArguments();
 
@@ -238,7 +238,7 @@ bool CommandExecutor::isValidCommand(const CommandParser& parser) const
     {   
         delete[] command;
         command = nullptr;
-        return Helper::isValidFileName(parser[1]);
+        return isValidFileName(parser[1]);
     }
     else if((strcmp(command, "close") == 0 && numberOfArgs == 1) ||
             (strcmp(command, "save") == 0 && numberOfArgs == 1) ||
@@ -284,7 +284,7 @@ bool CommandExecutor::execute(const CommandParser& parser)
     }
 
     strcpy(command, parser[0]);
-    Helper::inLowerCase(command);
+    inLowerCase(command);
 
     if(this->isFirstCommand && strcmp(command, "open") != 0 && 
                     strcmp(command, "help") != 0 && strcmp(command, "exit") != 0)
@@ -378,7 +378,7 @@ bool CommandExecutor::execute(const CommandParser& parser)
 
         if(isValidNumber)
         {
-            unsigned int n = Helper::toNumber(parser[2]);
+            unsigned int n = toNumber(parser[2]);
             this->child(parser[1], n);
         }
         else std::cout << "Invalid n!" << std::endl;        

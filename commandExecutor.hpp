@@ -10,39 +10,39 @@
 class CommandExecutor
 {
 	private:
-	    static const size_t MAX_LEN = 255;
+		static const size_t MAX_LEN = 255;
 
-	    Element element;
-	    char fileName[MAX_LEN];
-	    bool isSaved, isFirstCommand;
+		Element element;
+		char fileName[MAX_LEN];
+		bool isSaved, isFirstCommand;
 
-	    CommandExecutor();
+		CommandExecutor();
 
-	    void open(const char* fileName);
-	    void close();
-	    void save();
-	    void saveAs(const char* fileName);
-	    static void help();
-	    void exit(const CommandParser& parser);
+		void open(const char* fileName);
+		void close();
+		void save();
+		void saveAs(const char* fileName);
+		static void help();
+		void exit(const CommandParser& parser);
 
-	    void print() const;
-            void select(const char* id, const char* key) const;
-            void set(const char* id, const char* key, const char* value);
-            void children(const char* id) const;
-            void child(const char* id, unsigned int n) const;
-            void text(const char* id) const;
-            void deleteAttribute(const char* id, const char* key);
-            void newchild(const char* id);
+		void print() const;
+		void select(const char* id, const char* key) const;
+		void set(const char* id, const char* key, const char* value);
+		void children(const char* id) const;
+		void child(const char* id, unsigned int n) const;
+		void text(const char* id) const;
+		void deleteAttribute(const char* id, const char* key);
+		void newchild(const char* id);
 		
-	    bool isValidCommand(const CommandParser& parser) const;
+		bool isValidCommand(const CommandParser& parser) const;
 
 	public:
-	    CommandExecutor(const CommandExecutor& other) = delete;
-            CommandExecutor& operator = (const CommandExecutor& other) = delete;
-
-            static CommandExecutor& getInstance();
-
-	    bool execute(const CommandParser& parser);
+		CommandExecutor(const CommandExecutor& other) = delete;
+		CommandExecutor& operator = (const CommandExecutor& other) = delete;
+		
+		static CommandExecutor& getInstance();
+		
+		bool execute(const CommandParser& parser);
 };
 
 #endif
